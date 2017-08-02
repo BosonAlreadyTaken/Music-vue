@@ -63,8 +63,10 @@
           <h2 class="name" v-html="currentSong.name"></h2>
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
-        <div class="control" @click.stop="togglePlaying">
-          <i :class="miniIcon"></i>
+        <div class="control">
+          <progress-circle :radius="radius" :percent="percent">
+            <i @click.stop="togglePlaying" :class="miniIcon" class="icon-mini"></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -80,7 +82,7 @@
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
-  // import ProgressCircle from 'base/progress-circle/progress-circle'
+  import ProgressCircle from 'base/progress-circle/progress-circle'
   // import {playMode} from 'common/js/config'
   // import Lyric from 'lyric-parser'
   // import Scroll from 'base/scroll/scroll'
@@ -94,7 +96,8 @@
     data() {
       return {
         songReady: false,
-        currentTime: 0
+        currentTime: 0,
+        radius: 32
       }
     },
     computed: {
@@ -264,7 +267,8 @@
       }
     },
     components: {
-      ProgressBar
+      ProgressBar,
+      ProgressCircle
     }
   }
 </script>
