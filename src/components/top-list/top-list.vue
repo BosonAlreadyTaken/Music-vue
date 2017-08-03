@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <music-list :songs="songs" :title="title" :bgImage="bgImage"></music-list>
+    <music-list :rank="rank" :songs="songs" :title="title" :bgImage="bgImage"></music-list>
   </transition>
 </template>
 
@@ -17,6 +17,9 @@
         return this.topList.topTitle
       },
       bgImage() {
+        if (this.songs.length) {
+          return this.songs[0].image
+        }
         return this.topList.picUrl
       },
       ...mapGetters([
@@ -28,7 +31,8 @@
     },
     data() {
       return {
-        songs: []
+        songs: [],
+        rank: true
       }
     },
     methods: {
