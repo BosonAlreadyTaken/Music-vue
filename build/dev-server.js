@@ -53,6 +53,34 @@ apiRoutes.get('/getSongList', function (req, res) {
     console.log(e)
   })
 })
+apiRoutes.get('/getTopList', function (req, res) {
+  const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg'
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    res.json(response.data)
+  }).catch((e) => {
+    console.log(e)
+  })
+})
+apiRoutes.get('/getMusicList', function (req, res) {
+  const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg'
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    res.json(response.data)
+  }).catch((e) => {
+    console.log(e)
+  })
+})
 
 apiRoutes.get('/lyric', function (req, res) {
   var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
