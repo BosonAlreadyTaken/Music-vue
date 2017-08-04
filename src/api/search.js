@@ -19,7 +19,7 @@ export function getHotKey() {
   })
 }
 
-export function getSearch() {
+export function getSearch(query, page, zhida) {
   const url = '/api/getSearch'
   const data = Object.assign({}, commonParams, {
     g_tk: 5381,
@@ -29,9 +29,9 @@ export function getSearch() {
     notice: 0,
     needNewCode: 1,
     format: 'json',
-    w: 'jj',
+    w: query,
     zhidaqu: 1,
-    catZhida: 1,
+    catZhida: zhida ? 1 : 0,
     t: 0,
     flag: 1,
     ie: 'utf-8',
@@ -39,7 +39,7 @@ export function getSearch() {
     aggr: 0,
     perpage: 20,
     n: 20,
-    p: 1,
+    p: page,
     remoteplace: 'txt.mqq.all'
   })
   return axios.get(url, {
