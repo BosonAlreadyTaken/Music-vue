@@ -70,14 +70,17 @@
         getSearch(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
             this.result = this.result.concat(this._genResult(res.data))
-            this._checkMore(res.data)
+            this.checkMore(res.data)
           }
         })
+      },
+      refresh() {
+        this.$refs.suggest.refresh()
       },
       listScroll() {
         this.$emit('listScroll')
       },
-      _checkMore(data) {
+      checkMore(data) {
         const song = data.song
         if (!song.list.length || (song.curnum + song.curpage * perpage) >= song.totalnum) {
           this.hasMore = false
@@ -110,6 +113,7 @@
         } else {
           this.insertSong(item)
         }
+        this.$emit('select')
       },
       _genResult(data) {
         let ret = []

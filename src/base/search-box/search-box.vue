@@ -27,15 +27,15 @@
       },
       setQuery(query) {
         this.query = query
+      },
+      blur() {
+        this.$refs.queryInput.blur()
       }
     },
     created() {
       this.$watch('query', debounce((newQuery) => {
         this.$emit('query', newQuery)
       }, 200))
-    },
-    blur() {
-      this.$refs.queryInput.blur()
     }
   }
 </script>

@@ -3,20 +3,31 @@
     <div class="search-box-wrapper">
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
-    <div class="shortcut-wrapper" v-show="!query">
-      <div class="shortcut">
-        <div class="hot-key">
-          <h1 class="title">热门搜索</h1>
-          <ul>
-            <li @click="addQuery(item.k)" v-for="item in hotkey" class="item">
-              <span>{{item.k}}</span>
-            </li>
-          </ul>
+    <div ref="shortcutWrapper" class="shortcut-wrapper" v-show="!query">
+      <scroll ref="shortcut" class="shortcut" :data="shortcut">
+        <div>
+          <div class="hot-key">
+            <h1 class="title">热门搜索</h1>
+            <ul>
+              <li @click="addQuery(item.k)" v-for="item in hotkey" class="item">
+                <span>{{item.k}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="search-history" v-show="searchHistory.length">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <search-list :searches="searchHistory"></search-list>
+          </div>
         </div>
-      </div>
+      </scroll>
     </div>
-    <div class="search-result" v-show="query">
-      <suggest :query="query" ref="suggest" @listScroll="blurInput"></suggest>
+    <div ref="searchResult" class="search-result" v-show="query">
+      <suggest :query="query" ref="suggest" @listScroll="blurInput" @select="saveSearch"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -27,8 +38,13 @@
   import {getHotKey} from 'api/search'
   import {ERR_OK} from 'api/config'
   import Suggest from 'components/suggest/suggest'
+  import SearchList from 'base/search-list/search-list'
+  import Scroll from 'base/scroll/scroll'
+  import {mapActions, mapGetters} from 'vuex'
+  import {playlistMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playlistMixin],
     created() {
       this._getHotKey()
     },
@@ -38,7 +54,22 @@
         query: ''
       }
     },
+    computed: {
+      shortcut() {
+        return this.hotkey.concat(this.searchHistory)
+      },
+      ...mapGetters([
+        'searchHistory'
+      ])
+    },
     methods: {
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.shortcutWrapper.bottom = bottom
+        this.$refs.shortcut.refresh()
+        this.$refs.searchResult.bottom = bottom
+        this.$refs.suggest.refresh()
+      },
       addQuery(k) {
         console.log(11)
         this.$refs.searchBox.setQuery(k)
@@ -49,17 +80,25 @@
       blurInput() {
         this.$refs.searchBox.blur()
       },
+      saveSearch() {
+        this.saveSearchHistory(this.query)
+      },
       _getHotKey() {
         getHotKey().then((res) => {
           if (res.code === ERR_OK) {
             this.hotkey = res.data.hotkey.slice(0, 10)
           }
         })
-      }
+      },
+      ...mapActions([
+        'saveSearchHistory'
+      ])
     },
     components: {
       SearchBox,
-      Suggest
+      Suggest,
+      SearchList,
+      Scroll
     }
   }
 </script>
