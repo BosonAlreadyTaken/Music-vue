@@ -1,13 +1,13 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input v-model="query" class="box" :placeholder="placeholder"/>
+    <input ref="queryInput" v-model="query" class="box" :placeholder="placeholder"/>
     <i @click="clear" v-show="query" class="icon-dismiss"></i>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  // import {debounce} from 'common/js/util'
+  import {debounce} from 'common/js/util'
 
   export default {
     data() {
@@ -30,9 +30,12 @@
       }
     },
     created() {
-      this.$watch('query', (newQuery) => {
+      this.$watch('query', debounce((newQuery) => {
         this.$emit('query', newQuery)
-      })
+      }, 200))
+    },
+    blur() {
+      this.$refs.queryInput.blur()
     }
   }
 </script>
